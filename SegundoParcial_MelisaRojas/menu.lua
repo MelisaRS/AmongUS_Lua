@@ -2,11 +2,6 @@ local composer = require( "composer" )
  
 local scene = composer.newScene()
  
--- -----------------------------------------------------------------------------------
--- Code outside of the scene event functions below will only be executed ONCE unless
--- the scene is removed entirely (not recycled) via "composer.removeScene()"
--- -----------------------------------------------------------------------------------
- 
 local menuBackground
 
 local practiceButton
@@ -43,14 +38,12 @@ function scene:show( event )
  
     local sceneGroup = self.view
     local phase = event.phase
-    print("Ejecucion del show")
     if ( phase == "will" ) then
         practiceButton:addEventListener( "touch", goPractice )
         practiceButton.isVisible = true
-        print("Dentro del will de la funcion show")
 
     elseif ( phase == "did" ) then
-        print("Dentro del did de la funcion show")
+
     end
 end
  

@@ -9,8 +9,6 @@ local fondo
 local botonMenu
 local textoMenu 
 
-
-
 function irMenu(event)
     if event.phase == "ended" or event.phase == "cancelled" then
         print(" Cambiando al menu")
@@ -89,8 +87,6 @@ function scene:create( event )
             )
         end
         ----------------------------------------------------------------------- 
-
-
 end
  
 -- show()
@@ -108,8 +104,6 @@ function scene:show( event )
 
     elseif ( phase == "did" ) then
         botonMenu:addEventListener("touch", irMenu)
-
-
     end
 
 end
@@ -134,7 +128,6 @@ function scene:hide( event )
     elseif ( phase == "did" ) then
     end
 end
- 
  
 -- destroy()
 function scene:destroy( event )

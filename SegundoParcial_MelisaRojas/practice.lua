@@ -183,7 +183,11 @@ function caminarIzqAmongB()
 	end
 end
 
+--[[
 
+3. El personaje deberá tener animaciones
+
+]]
 -------FUNCIONES DIRECCIONES--------------------------------
 
 --se utilizara para saber si esta en movimiento o no y asi poder hacer que se mueva o deje de moverse
@@ -199,7 +203,6 @@ function botonCaminarDer( e )
 		print("muevo derecha")
 		among:setSequence( "caminarDer" )
 		among:play()
-		--end
 
 	elseif (e.phase == "ended") then
 		enMovimiento = false
@@ -215,7 +218,6 @@ function botonCaminarIzq( e )
 		print("muevo izquierda")
 		among:setSequence( "caminarIzq" )
 		among:play()
-		--end
 
 	elseif (e.phase == "ended") then
 		enMovimiento = false
@@ -305,6 +307,11 @@ function animarMatanza(e)
 	return true
 end
 
+--[[
+
+1. Tener un personaje que se mueva
+
+]]
 ------FUNCIONES CAMARA----------------------------------------
 
 function camara(e)
@@ -314,11 +321,19 @@ function camara(e)
     groupInterface.y = -groupStage.y
 end
 
+--[[
+
+ 2. Debe haber 5 lugares que al estar en contacto
+
+]]
 ------FUNCIONES COLISION----------------------------------------
+local amongB_x
+local amongB_y
 
 function checkCollision(self, event)
-	print(event.target.name)
-	print(event.other)
+	--print(event.target.name)
+	--print(event.other)
+
 
 	if event.other.name == "meteoro" then
 		meteoros:setFillColor( 1,0,0,0.5 )
@@ -342,16 +357,21 @@ function checkCollision(self, event)
 
 	elseif event.other.name == "amongBlue" then
 		if estaMatando == true then
-			transition.cancel(amongB)
-			amongMuerto.x = amongB.x; amongMuerto.y = amongB.y
-			display.remove(amongB)
-			amongB = nil
-			amongMuerto.alpha = 1
-			--[[
-			physics.addBody( amongMuerto, "static",{radius=20})
-			amongB.isFixedRotation = true
-			amongB.gravityScale = 0
-			]]
+			if amongB ~= nil then
+
+				amongB_x = amongB.x
+				amongB_y = amongB.y
+				transition.cancel(amongB)
+				amongMuerto.x = amongB_x; amongMuerto.y = amongB_y
+				display.remove(amongB)
+				amongB = nil
+				amongMuerto.alpha = 1
+				--[[
+				physics.addBody( amongMuerto, "static",{radius=20})
+				amongB.isFixedRotation = true
+				amongB.gravityScale = 0
+				]]
+			end
 		end
 	end
 end
@@ -361,12 +381,15 @@ local colision = true
 function verificarColision()
 
     if colision then
+
         among:addEventListener( "collision" )
     else
+
 		buttonUse_meteoros.isVisible = false
 		buttonUse_gasolina.isVisible = false
 		buttonUse_escaner.isVisible = false
 		buttonUse_cables.isVisible = false
+
     end
 end
 
@@ -410,7 +433,7 @@ end
 function scene:create( event )
 
 	physics.start( )
-	physics.setDrawMode( "hybrid" )
+	physics.setDrawMode( "normal" )
 
 	local sceneGroup = self.view
 
@@ -433,7 +456,7 @@ function scene:create( event )
 		angle = 0
 	}]]
 	physics.addBody( among, "dynamic",{radius=20}) --{box=among_body} )
-	print(among.sequence, among.frame)
+	--print(among.sequence, among.frame)
 	among.isFixedRotation = true
 	among.gravityScale = 0
 	print(physics.getGravity( ) )
@@ -510,25 +533,15 @@ function scene:create( event )
 
 	--------PERSONAJE 2----------------------------------
 
-	--crearAmongB()
-	--[[
-	amongB = display.newSprite( groupAnimated, amongIzqDer_spriteB, sequenceB )
-	amongB.x = 10; amongB.y = CH-40
-	amongB:scale( 1, 1.4 )
-	--amongB:play()
-	amongB.name = "amongBlue"
-
-	--caminarDerAmongB()
-
-	physics.addBody( amongB, "static",{radius=20})
-	amongB.isFixedRotation = true
-	amongB.gravityScale = 0
-	]]
 	amongMuerto = display.newImageRect( groupAnimated, rutaAssets.."amongAMuerto.png",24,25 )
-	--amongMuerto.x = amongB.x; amongMuerto.y = amongB.y
 	amongMuerto.alpha = 0
-    
-    
+
+    --------------------------------------------------------------------------------------------------------------------------
+    --[[
+
+	4. Incluir los botones en pantalla que permitan realizar las interacciones
+
+    ]]
 
     ---------ICONO USE PARA TAREAS------------------
 	buttonUse = display.newImageRect( groupInterface, rutaAssets.."use.png", 263/10, 272/10 )
@@ -626,36 +639,39 @@ function scene:show( event )
  
     if ( phase == "will" ) then
         groupStage.isVisible = true
-        --crearAmongB()
 
-        if amongB ~= nil then
-        	caminarDerAmongB()
-        else
+
+        if amongB == nil then
         	crearAmongB()
         end
 
     elseif ( phase == "did" ) then
-        -- Code here runs when the scene is entirely on screen
-    --groupStage.isVisible = true
-    --transition.resume()
-    physics.start( )
-    physics.setDrawMode( "hybrid" )
-    among.collision = checkCollision
-    --------LISTENERS-----------------------------------
-    Runtime:addEventListener( "enterFrame", camara )
-	botonKill:addEventListener( "touch", animarMatanza )
-	botonKillCuchillo:addEventListener( "touch", animarMatanza )
-	botonDer:addEventListener( "touch", botonCaminarDer )
-	botonIzq:addEventListener( "touch", botonCaminarIzq )
-	botonArr:addEventListener( "touch", botonCaminarArr )
-	botonAb:addEventListener( "touch", botonCaminarAb )
-	Runtime:addEventListener("enterFrame", moviendoAmong)
-	--among:addEventListener( "collision" )
-	Runtime:addEventListener( "enterFrame", verificarColision )
-	buttonUse_cables:addEventListener("touch", irCables)
-	buttonUse_meteoros:addEventListener("touch", irMeteoros)
-	buttonUse_gasolina:addEventListener("touch", irGasolina)
-	buttonUse_escaner:addEventListener("touch", irEscaner)
+    
+    	--groupStage.isVisible = true
+    	--transition.resume()
+
+    	if amongB ~= nil then
+        	caminarDerAmongB()
+        end
+
+	    physics.start( )
+	    physics.setDrawMode( "normal" )
+	    among.collision = checkCollision
+	    --------LISTENERS-----------------------------------
+	    Runtime:addEventListener( "enterFrame", camara )
+		botonKill:addEventListener( "touch", animarMatanza )
+		botonKillCuchillo:addEventListener( "touch", animarMatanza )
+		botonDer:addEventListener( "touch", botonCaminarDer )
+		botonIzq:addEventListener( "touch", botonCaminarIzq )
+		botonArr:addEventListener( "touch", botonCaminarArr )
+		botonAb:addEventListener( "touch", botonCaminarAb )
+		Runtime:addEventListener("enterFrame", moviendoAmong)
+		--among:addEventListener( "collision" )
+		Runtime:addEventListener( "enterFrame", verificarColision )
+		buttonUse_cables:addEventListener("touch", irCables)
+		buttonUse_meteoros:addEventListener("touch", irMeteoros)
+		buttonUse_gasolina:addEventListener("touch", irGasolina)
+		buttonUse_escaner:addEventListener("touch", irEscaner)
 
     end
 end
@@ -683,13 +699,13 @@ function scene:hide( event )
 		buttonUse_escaner:removeEventListener("touch", irEscaner)
 
 	
-	transition.cancel( )
-	--transition.pause( )
-	groupStage.isVisible = false
-	physics.pause( )
+		transition.cancel( )
+		--transition.pause( )
+		groupStage.isVisible = false
+		physics.pause( )
         
     elseif ( phase == "did" ) then
-        -- Code here runs immediately after the scene goes entirely off screen 
+
     end
 end
  
@@ -698,7 +714,6 @@ end
 function scene:destroy( event )
  
     local sceneGroup = self.view
-    -- Code here runs prior to the removal of scene's view
  
 end
  

@@ -69,7 +69,6 @@ function scene:create( event )
     llenarGasolina:setFillColor(1,0,0,0.3 )
     llenarGasolina.isVisible=false
     -----------------------------
-
 end
  
 -- show()
@@ -93,7 +92,6 @@ function scene:show( event )
 
     elseif ( phase == "did" ) then
         botonMenu:addEventListener("touch", irMenu)
-
         botonGasolina:addEventListener( "touch", tocar_botonGasolina )
 
     end
@@ -111,16 +109,11 @@ function scene:hide( event )
         botonMenu.isVisible=false
         textoMenu.isVisible=false
 
-
-
         botonGasolina.isVisible = false
         llenarGasolina.isVisible=false
-
-
         
     elseif ( phase == "did" ) then
 
- 
     end
 end
  
